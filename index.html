@@ -272,6 +272,312 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/21/Automatic-sense-prediction-for-implicit-discourse-relations-in-text-阅读笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ice">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ice's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/21/Automatic-sense-prediction-for-implicit-discourse-relations-in-text-阅读笔记/" itemprop="url">Automatic sense prediction for implicit discourse relations in text 阅读笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-21T21:28:20+08:00">
+                2018-11-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>使用PDTB四大关系为了<strong>theory-neutral</strong>(理论中立)</p>
+<h2 id="Word-pair-features-in-prior-work"><a href="#Word-pair-features-in-prior-work" class="headerlink" title="Word pair features in prior work"></a>Word pair features in prior work</h2><h4 id="1-Cross-product-of-words"><a href="#1-Cross-product-of-words" class="headerlink" title="1 Cross product of words"></a>1 Cross product of words</h4><p>word pair: 是大多数前人隐式关系分类的基本特征</p>
+<blockquote>
+<p>针对使用word pair，会出现2个问题：</p>
+<ol>
+<li>词数太多，导致要特征可选择性太多；</li>
+<li>词频不够大，导致数据稀疏问题；</li>
+</ol>
+<ul>
+<li>若用word pair有用，先用显式语料找出个关系对应的word pair，再用于隐式关系分类中。</li>
+</ul>
+</blockquote>
+<p>为了解决问题1，前人挑选了一些词（非功能词）</p>
+<ul>
+<li><strong>使用所有的词效果好于仅仅使用non-function words</strong>（在千万级别训练数据上得到的结果Marcu and Echihabi (2001)）。但是Marcu and Echihabi (2001)发现，去除function词（it,the,…)，学习曲线会变陡。他们猜想在训练数据足够的情况下，只使用non-function词比使用所有词强。</li>
+<li>动词对比其他词对（名词对、形容词对等几乎）效果好（Lapata and Lascarides (2004) ）</li>
+</ul>
+<ul>
+<li>Blair-Goldensohn et al.<strong>** (2007)使用（1）取词干；（2）只用频率较高的词干形成固定词典（但是Pitler认为这样会导致词典中都是function词）；（3）a cutoff on the minimum frequency of a feature（置频率小的特征值为0？）。这些全部都能提高性能。</strong>删去stop words（it,the,…)，效果反而变差**。</li>
+<li>删去词频&lt;5的词后，用MALLET toolkit选取有最大信息量的词对，结果显示，<strong>最大信息量词对多为stop words其包含连接词（e.g., it-but)</strong>。</li>
+</ul>
+<h4 id="作者的自问自答："><a href="#作者的自问自答：" class="headerlink" title="作者的自问自答："></a>作者的自问自答：</h4><h5 id="1-为什么含信息量最大的词对如此异常（对多为stop-words或者连接词）"><a href="#1-为什么含信息量最大的词对如此异常（对多为stop-words或者连接词）" class="headerlink" title="1 为什么含信息量最大的词对如此异常（对多为stop words或者连接词）"></a>1 为什么含信息量最大的词对如此异常（对多为stop words或者连接词）</h5><p>原因： 人为删去连接词造隐式语料，遗留的与真正关系无关的连接词会成为真正关系的重要词对。比如，Contrast中的but（conn）全被删除了，反而Contingency里存在的不是连接词的but被作为判别非Contrast关系的主要词对组成元素。</p>
+<ul>
+<li>这样的方法虽然对删去连接词的伪隐式语料有效，但是对真正的隐式语料是无效的。</li>
+</ul>
+<h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><h5 id="2-为什么使用仅仅名词、动词、形容词（几乎等于删去function-words外的）效果不如所有词一起训练的好？"><a href="#2-为什么使用仅仅名词、动词、形容词（几乎等于删去function-words外的）效果不如所有词一起训练的好？" class="headerlink" title="2 为什么使用仅仅名词、动词、形容词（几乎等于删去function words外的）效果不如所有词一起训练的好？"></a>2 为什么使用仅仅名词、动词、形容词（几乎等于删去function words外的）效果不如所有词一起训练的好？</h5><p>原因：机器MALLET toolkit选出来的信息量最大的词对多为stop words或者连接词。</p>
+<h2 id="篇章关系识别使用的特征"><a href="#篇章关系识别使用的特征" class="headerlink" title="篇章关系识别使用的特征"></a>篇章关系识别使用的特征</h2><h5 id="1-Polarity-Tags-正反2极的词对，多为Comparison关系。"><a href="#1-Polarity-Tags-正反2极的词对，多为Comparison关系。" class="headerlink" title="1 Polarity Tags: 正反2极的词对，多为Comparison关系。"></a>1 Polarity Tags: 正反2极的词对，多为Comparison关系。</h5><blockquote>
+<p>因为一对相反的词：popular/oblivion可以说语义相反，也可以说popular是积极的，oblivion是消极的</p>
+</blockquote>
+<ul>
+<li>使用不同极性词的个数作为特征。</li>
+</ul>
+<h5 id="2-Inquirer-Tags-（General-Inquirer-lexicon-Stone-et-ak-1966"><a href="#2-Inquirer-Tags-（General-Inquirer-lexicon-Stone-et-ak-1966" class="headerlink" title="2 Inquirer Tags: （General Inquirer lexicon (Stone et ak., 1966))"></a>2 Inquirer Tags: （General Inquirer lexicon (Stone et ak., 1966))</h5><ul>
+<li>使用标签而非词对的好处是：可以see more observation for语义类别不是单个词，比如某类-某类词之间是什么关系，而不是某个-某个词之间是什么关系。</li>
+</ul>
+<h5 id="3-Money-Percent-Num"><a href="#3-Money-Percent-Num" class="headerlink" title="3 Money/Percent/Num:"></a>3 Money/Percent/Num:</h5><ul>
+<li>使用2个arg中的num、percnet、money个数作为特征，同时，两个arg中num、percnet、money的组队个数作为特征。（e.g., arg1中2个percent，arg2中一个money，可组成2对数：percent1-money和percent2-money）</li>
+<li>多出现于金融类文章中</li>
+</ul>
+<h5 id="4-WSJ-LM：表示词的经典程度：哪个词对各关系而言，更典型。"><a href="#4-WSJ-LM：表示词的经典程度：哪个词对各关系而言，更典型。" class="headerlink" title="4 WSJ-LM：表示词的经典程度：哪个词对各关系而言，更典型。"></a>4 WSJ-LM：表示词的经典程度：哪个词对各关系而言，更典型。</h5><ul>
+<li>为每个sense在隐式语料上训练一个unigram和bigram语言模型，再用这个模型来决定这个例子最有可能是哪类。（比如，根据unigram模型，这个例子第三有可能由Contingency关系产生，标为ContingencyUnigram3）</li>
+</ul>
+<h5 id="5-Expl-LM："><a href="#5-Expl-LM：" class="headerlink" title="5 Expl-LM："></a>5 Expl-LM：</h5><ul>
+<li>同4，但是使用在显式语料上训练的语言模型。</li>
+</ul>
+<h5 id="6-Verbs："><a href="#6-Verbs：" class="headerlink" title="6 Verbs："></a>6 Verbs：</h5><ul>
+<li>来自Levin verb class中相同class的动词数目：<ul>
+<li>动词关系越接近，越可能是Expansion</li>
+</ul>
+</li>
+<li>动词短语长短的平均值，两个arg此值的向量积<ul>
+<li>动词越长：Contingency，因为他经常包含事后的理由（rationales afterwards)。</li>
+<li>短：Expansion/Temporal</li>
+</ul>
+</li>
+<li>POS TAG (用于观测动词时态)<ul>
+<li>一致：Expansion</li>
+<li>不一致：Contingency/Temporal</li>
+</ul>
+</li>
+</ul>
+<h5 id="7-First-Last-First3-因为类似连接词的表达方式通常在句首或句尾。"><a href="#7-First-Last-First3-因为类似连接词的表达方式通常在句首或句尾。" class="headerlink" title="7 First-Last, First3: 因为类似连接词的表达方式通常在句首或句尾。"></a>7 First-Last, First3: 因为类似连接词的表达方式通常在句首或句尾。</h5><ul>
+<li>取arg1的首尾词，arg2的首尾词，arg1和arg2的首词，arg1和arg2的尾词，arg1的前3个词，arg2的前3个词。</li>
+</ul>
+<h5 id="8-Modality："><a href="#8-Modality：" class="headerlink" title="8 Modality："></a>8 Modality：</h5><ul>
+<li>有：Contingency</li>
+<li>以是否有情态动词、以及两arg的有无情态动词的特征向量积作为特征。</li>
+</ul>
+<h5 id="9-Context"><a href="#9-Context" class="headerlink" title="9 Context"></a>9 Context</h5><ul>
+<li>作为一个段落的开头和在段落中也有不同分布，将arg1是否是一个段落的开头作为特征。</li>
+<li>隐式语料前后的显式语料关系与隐式关系很大可能是相同的，以隐式语料前后的explicit relation作为特征。</li>
+</ul>
+<h2 id="实验结果分析"><a href="#实验结果分析" class="headerlink" title="实验结果分析"></a>实验结果分析</h2><table>
+<thead>
+<tr>
+<th>Features</th>
+<th>Comp. vs. Not</th>
+<th>Cont. vs. Other</th>
+<th>Exp. vs. Other</th>
+<th>Temp. vs. Other</th>
+<th>Four-way</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Money/Percent/Num</td>
+<td>19.04 (43.60)</td>
+<td>18.78 (56.27)</td>
+<td>22.01 (41.37)</td>
+<td>10.40 (23.05)</td>
+<td>(63.38)</td>
+</tr>
+<tr>
+<td>Polarity Tags</td>
+<td>16.63 (55.22)</td>
+<td>19.82 (76.63)</td>
+<td>71.29 (59.23)</td>
+<td>11.12 (18.12)</td>
+<td>(65.19)</td>
+</tr>
+<tr>
+<td>WSJ-LM</td>
+<td>18.04 (9.91)</td>
+<td>0.00 (80.89)</td>
+<td>0.00 (35.26)</td>
+<td>10.22 (5.38)</td>
+<td>(65.26)</td>
+</tr>
+<tr>
+<td>Expl-LM</td>
+<td>18.04 (9.91)</td>
+<td>0.00 (80.89)</td>
+<td>0.00 (35.26)</td>
+<td>10.22 (5.38)</td>
+<td>(65.26)</td>
+</tr>
+<tr>
+<td>Verbs</td>
+<td>18.55 (26.19)</td>
+<td>36.59 (62.44)</td>
+<td>59.36 (52.53)</td>
+<td>12.61 (41.63)</td>
+<td>(65.33)</td>
+</tr>
+<tr>
+<td>First-Last, First3</td>
+<td>21.01 (52.59)</td>
+<td>36.75 (59.09)</td>
+<td>63.22 (56.99)</td>
+<td>15.93 (61.20)</td>
+<td>(65.40)</td>
+</tr>
+<tr>
+<td>Inquirer tags</td>
+<td>17.37 (43.8)</td>
+<td>15.76 (77.54)</td>
+<td>70.21 (58.04)</td>
+<td>11.56 (37.69)</td>
+<td>(62.21)</td>
+</tr>
+<tr>
+<td>Modality</td>
+<td>17.70 (17.6)</td>
+<td>21.83 (76.95)</td>
+<td>15.38 (37.89)</td>
+<td>11.17 (27.91)</td>
+<td>(65.33)</td>
+</tr>
+<tr>
+<td>Context</td>
+<td>19.32 (56.66)</td>
+<td>29.55 (67.42)</td>
+<td>67.77 (57.85)</td>
+<td>12.34 (55.22)</td>
+<td>(64.01)</td>
+</tr>
+<tr>
+<td>Random</td>
+<td>9.91</td>
+<td>19.11</td>
+<td>64.74</td>
+<td>5.38</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>Comparision：</li>
+</ol>
+<ul>
+<li>Polarity Tags特征表现最差，与常识相反。因为30%的Comparison例子中有反极性tag，31%的其他关系中也有反极性tage。（这是第一次有人在篇章关系中检查盛行的极性标签特征）</li>
+</ul>
+<ol start="2">
+<li>Contingency</li>
+</ol>
+<ul>
+<li>（隐式）经常紧跟在显式Comparison后；</li>
+<li>Contingency中包含52%的极性相反词对，non-Contingency中包含41%极性相反词对，所以极性标签能识别出Contingency。</li>
+</ul>
+<ol start="3">
+<li>Temporal</li>
+</ol>
+<ul>
+<li>First-Last, First3对其最有效，因为时序关系经常在句尾有“yesterday”和“Monday”这样的词。</li>
+</ul>
+<h2 id="序列模型"><a href="#序列模型" class="headerlink" title="序列模型"></a>序列模型</h2><p>因为隐式关系与其周围实例关系之间存在联系，所以最好不要独立地为各个句子分类，而是使用CRF模型来为一系列隐式实例分类（Dai et al.， 2018的灵感来源）。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>最好的应用这些特征的方法是：从大量显式语料中抽取出特征，用隐式语料训练这些特征。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/30/Hello-World/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -602,7 +908,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
